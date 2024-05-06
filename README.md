@@ -1,7 +1,11 @@
 <h1>Guyana Flood Mapping</h1>
+<hr>
 <h3>Clark University - Advance Remote Sensing - Spring 2024</h3>
 <h3>Project by Clio Bate, Claudia Buszta, Hanxi Li, André de Oliveira, Ruthanne Ward</h3>
-<br></br>
+
+![Flooding in Rupununi Wetland](assets/07-14.png "Flooding in Rupununi Wetland, July 14 2017")
+Flooding in Rupununi Wetland, July 14 2017
+<hr>
 
 ## Environment Setup Instructions for ASF flood mapping notebooks
 
