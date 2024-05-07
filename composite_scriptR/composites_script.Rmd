@@ -1,0 +1,115 @@
+---
+title: "Composite"
+author: "ClioBate"
+date: "2024-04-26"
+output: html_document
+---
+This script takes vv and vh polarization image for SAR Sent 1 for flooding in Guyana wetlands study area for July 14th, 2017
+and 
+1. creates a ratio of vv and vh
+2. stacks the three images
+3. and creats a RBG color composite image.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+## Load Packages
+```{r}
+library(raster)
+library(sp)
+library(ggplot2)
+# library(rgdal) # no longer included in CRAN :/
+```
+
+## Set wd for 2017
+```{r}
+
+wd <- ("V:/Commons/FloodingGroup/SAR-RTC") #change wd here
+setwd(wd)
+
+```
+## to test that an image is being read.
+```{r}
+
+#vv2017 <- paste0(wd,"/S1A_RTC_Guyana_2017_07_14_vv.tif")
+
+#vh2017 <- paste0(wd,"/S1A_RTC_Guyana_2017_07_14_vh.tif")
+
+# check the files exist
+#file.exists(vv2017)
+#file.exists(vh2017)
+
+## Read in Tiffs 2017
+
+```
+
+## Common dual polarized SAR combinations are VV for red, VH for green, and VV/VH for blue
+```{r}
+# function that stacks and creates a ratio for vv and vh
+comp <- function(vv, vh){
+
+    #set wd  in format "year/"
+    
+    # read in rasters and make ratio
+    vv <- paste0(wd, vv)
+    vh <- paste0(wd, vh)
+    ratio <- raster(vv) / raster(vh)
+
+    # check the files exist
+    #file.exists(vv)
+    #file.exists(vh)
+
+    # stack vv vh and vv/vh
+    stacked_RGB <- stack(vv, vh, ratio)
+    stacked_RGB # view info
+    
+    #plot(stacked_RGB)
+    plotRGB(stacked_RGB,r=1,g=2,b=3, stretch = "hist")
+    
+    #plotRGB(stacked_RGB, r = 1, g = 2, b = 3, stretch = "hist", margins=TRUE, main="SAR Flooding Composite for July 14th, 2017", cex.main = 0.5)
+    
+    
+
+    return(stacked_RGB)
+    #plotRGB(stacked_RGB,r=1,g=2,b=3, stretch = "hist")
+}
+```
+
+```{r}
+
+#comp("/2017/S1A_RTC_Guyana_2017_07_14_vv.tif", "/2017/S1A_RTC_Guyana_2017_07_14_vh.tif")
+
+
+#march 23rd 2018
+#comp("/2018/S1A_RTC_Guyana_2018_03_23_vv.tif", "/2018/S1A_RTC_Guyana_2018_03_23_vh.tif")
+
+#april 4th
+comp("/2018/S1A_RTC_Guyana_2018_04_04_vv.tif", "/2018/S1A_RTC_Guyana_2018_04_04_vh.tif")
+
+
+# april 16th
+comp("/2018/S1A_RTC_Guyana_2018_04_16_vv.tif", "/2018/S1A_RTC_Guyana_2018_04_16_vh.tif")
+
+# april 28th
+comp("/2018/S1A_RTC_Guyana_2018_04_28_vv.tif", "/2018/S1A_RTC_Guyana_2018_04_28_vh.tif")
+
+# may 10th
+comp("/2018/S1A_RTC_Guyana_2018_05_10_vv.tif", "/2018/S1A_RTC_Guyana_2018_05_10_vh.tif")
+
+
+```
+
+----------------------------------------------------------------------
+
+
+
+
