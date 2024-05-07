@@ -7,6 +7,12 @@
 Flooding in Rupununi Wetland, July 14 2017
 <hr>
 
+## Sentinel-1 RTC data download pipeline
+
+The pipeline jupyter notebook is located within folder __s1rtc_data_download__ named _workflow.ipynb_. The data download pipline is able to: 
+1. Query rtc images based on area of interest, datetime, spatial coverage of tiles over aoi, Ascending or Aescending orbit order
+2. Download vh and vv band data from query results with some pre-precessing includes setting NoData value to zero, selecting which band to be download, reprojecting all bands to the same projection system and clipping the raster to the area of interest
+
 ## Environment Setup Instructions for ASF flood mapping notebooks
 
 <p>These instructions guide you through creating and activating environments necessary for running the notebooks in the ASF_Adaptive_Flood_Mapping directory of this repository. All commands should be executed in the terminal. The notebooks were run in Microsoft Planetary Computer but could be run locally.</p>
