@@ -1,14 +1,7 @@
 import os
-import dask
-import json
-import math
-import geogif
 import shutil
-import leafmap
-import requests
 import tempfile
 import rasterio
-import stackstac
 import pystac_client
 import numpy as np
 import pandas as pd
@@ -20,16 +13,18 @@ import shapely.geometry as geom
 
 from tqdm import tqdm
 from pathlib import Path
-from pystac import ItemCollection
 from datetime import datetime as dt
-from rioxarray.merge import merge_datasets
+
 ###########################################################
+
 def load_aoi(aoi_path: str):
     aoi = gpd.read_file(aoi_path).to_crs("EPSG:4326")
     bbox = [coord for coord in aoi.bounds.values[0]]
     return aoi, bbox
+
 ###########################################################
-def stac_query(stac_catalog, bbox, collection, datetime):
+
+def stac_query(stac_catalog: str, bbox: list, collection: str, datetime: str):
     
     catalog = pystac_client.Client.open(stac_catalog)
     # Sentinel1-rtc is available from 2014/10/10-present
@@ -41,8 +36,10 @@ def stac_query(stac_catalog, bbox, collection, datetime):
     items = pc.sign(search)
     print(f"There are {len(items)} tiles found")
     return items
+
 ###########################################################
-def spatial_coverage_calc(items, aoi):
+
+def spatial_coverage_calc(items, aoi: geom.geom):
     df = gpd.GeoDataFrame.from_features(items.to_dict(), crs="epsg:4326")
     geom_tiles = []
     for i in range(len(df)):
@@ -74,8 +71,10 @@ def spatial_coverage_calc(items, aoi):
     
     tile_df = pd.DataFrame(meta_list)
     return tile_df
+
 ###########################################################
-def query_rtc (df, start_date, end_date, spatial_cover=None, orbit=None):
+
+def query_rtc (df: pd.DataFrame, start_date: str, end_date: str, spatial_cover: int=None, orbit: str=None):
     
     start = dt.strptime(start_date, "%Y-%m-%d")
     end = dt.strptime(end_date, "%Y-%m-%d")
@@ -100,8 +99,10 @@ def query_rtc (df, start_date, end_date, spatial_cover=None, orbit=None):
     df = pd.DataFrame(passed_list)
     print(f"Contains images from {df.instrument.unique()} with crs of {df.crs.unique()}")
     return df
+
 ###########################################################
-def local_save(item, save_path, tile_crs, clip_aoi=None, crs=None):
+
+def local_save(item, save_path: str, tile_crs: str, clip_aoi: geom.geom=None, crs:str=None):
     if not os.path.isfile(save_path):
             if clip_aoi is not None:
                 if crs is not None:
@@ -118,7 +119,9 @@ def local_save(item, save_path, tile_crs, clip_aoi=None, crs=None):
                         rio.open_rasterio(item, cache = False).rio.reproject(crs, resolution=10).rio.to_raster(save_path, driver="COG")
                     else:
                         rio.open_rasterio(item, cache = False).rio.to_raster(save_path, driver="COG")
+
 ###########################################################
+
 def nodata_convert(file_path, workdir):
     temp_file_path = Path(workdir)
     with rasterio.open(file_path) as src:
